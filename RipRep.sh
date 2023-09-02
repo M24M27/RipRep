@@ -1,57 +1,52 @@
 #!/bin/bash
 
-# Function to install GitHub CLI on Ubuntu
-install_gh_ubuntu() {
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-    sudo apt-add-repository https://cli.github.com/packages
-    sudo apt update
-    sudo apt install gh
-}
-
-# Function to install GitHub CLI on MacOS
-install_gh_macos() {
-    brew install gh
-}
-
-# Function to install GitHub CLI on Windows
-install_gh_windows() {
-    choco install gh
-}
-
-# Function to install GitHub CLI on Termux
-install_gh_termux() {
-    pkg install gh
+# Function to install GitHub CLI on various Linux distributions
+install_gh_linux() {
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update
+        sudo apt-get install gh
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install gh
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -S gh
+    elif command -v yum &> /dev/null; then
+        sudo yum install gh
+    elif command -v zypper &> /dev/null; then
+        sudo zypper install gh
+    elif command -v eopkg &> /dev/null; then
+        sudo eopkg install gh
+    elif command -v emerge &> /dev/null; then
+        sudo emerge --ask app-misc/gh
+    else
+        echo "Unsupported package manager. Please install GitHub CLI manually."
+        exit 1
+    fi
 }
 
 # Check if gh is installed
 if ! command -v gh &> /dev/null
 then
     echo "GitHub CLI (gh) could not be found. Installing it now..."
-
+    
     # Detect the operating system
     OS="$(uname)"
-
+    
     case $OS in
         'Linux')
-            # Check for Termux
-            if command -v termux-setup-storage &> /dev/null; then
-                install_gh_termux
-            else
-                install_gh_ubuntu
-            fi
+            install_gh_linux
             ;;
         'Darwin')
-            install_gh_macos
+            brew install gh
             ;;
         'WindowsNT')
-            install_gh_windows
+            choco install gh
             ;;
         *)
             echo "Unsupported OS. Please install GitHub CLI manually."
             exit 1
             ;;
     esac
-
+    
     echo "GitHub CLI (gh) installed successfully."
 fi
 
