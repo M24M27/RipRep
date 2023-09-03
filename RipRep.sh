@@ -132,3 +132,7 @@ if [ "$clone_repo" == "y" ]; then
 else
     echo "Repository $repo_name created on GitHub."
 fi
+
+# Add the directory to the system-wide PATH
+echo "Adding directory to system-wide PATH..."
+echo "PATH=\"$PATH:/path/to/your/directory\"" | sudo tee -a /etc/environment
